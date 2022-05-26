@@ -5,8 +5,9 @@ import com.vehicle.identifier.vicore.models.Notification;
 import com.vehicle.identifier.vicore.models.Timelog;
 import com.vehicle.identifier.vicore.models.Vehicle;
 import com.vehicle.identifier.vicore.services.*;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import static com.vehicle.identifier.vicore.util.Notifications.arrivalNotification;
 import static com.vehicle.identifier.vicore.util.Times.entryTime;
 
+@Controller
 public class RemoteController {
 
     @Autowired
@@ -31,9 +33,9 @@ public class RemoteController {
     @Autowired
     TimelogService timelogService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/vehicle",
+    @RequestMapping(method = RequestMethod.POST, value = "/remote",
             consumes = "application/json", produces = "application/json")
-    public int getVehicleFromRemote(@RequestBody Vehicle vehicle){
+    public ResponseEntity getVehicleFromRemote(@RequestBody Vehicle vehicle){
         if(!checkIfVehicleExists(vehicle.getLicensePlate())){
             gateService.openGate();
             vehicleService.addFromRemoteVehicle(vehicle);
@@ -41,7 +43,7 @@ public class RemoteController {
             timelogService.addTimeEntry(entryTime(vehicle.getLicensePlate()));
             System.out.println("Time Saved");
             notificationService.sendRegistrationEmail(vehicle);
-            return Response.SC_OK;
+            return ResponseEntity.ok().build();
         }
         Vehicle vehicle1 = vehicleService.getVehicleByLicensePlate(vehicle.getLicensePlate());
         Driver driver = driverService.findById(vehicle1.getDriverId());
@@ -54,7 +56,8 @@ public class RemoteController {
         System.out.println("Sending email");
         notificationService.sendEmailNotification(notification);
 
-        return Response.SC_OK;
+        return ResponseEntity.ok().build();
+
     }
 
     public boolean checkIfVehicleExists(String licencePlate){

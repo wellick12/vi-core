@@ -26,6 +26,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/login", "/resources/**", "/css/**", "/fonts/**", "/img/**").permitAll()
 		.antMatchers("/register", "/resources/**", "/css/**", "/fonts/**", "/img/**", "/js/**").permitAll()
 		.antMatchers("/users/addNew").permitAll()
+		.antMatchers("/remote").permitAll()
 		.anyRequest().authenticated()
 		.and()
 				.exceptionHandling().accessDeniedPage("/accessDenied")
