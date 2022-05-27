@@ -41,4 +41,15 @@ public class TimelogServiceImpl implements TimelogService{
     public void addTimeEntry(Timelog timelog) {
         timelogRepository.save(timelog);
     }
+
+    @Override
+    public List<Timelog> getTimelogByLicensePlace(String licensePlate) {
+        return timelogRepository.findTimelogByVehicleId(licensePlate);
+    }
+
+    @Override
+    public void save(Timelog timelog1) {
+
+         timelogRepository.save(timelog1);
+    }
 }

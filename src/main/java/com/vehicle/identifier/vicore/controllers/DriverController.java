@@ -2,6 +2,7 @@ package com.vehicle.identifier.vicore.controllers;
 
 import com.vehicle.identifier.vicore.models.Driver;
 import com.vehicle.identifier.vicore.services.DriverService;
+import com.vehicle.identifier.vicore.services.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,8 @@ public class DriverController {
 	@Autowired
 	DriverService driverService;
 
+	@Autowired
+	VehicleService vehicleService;
 
 	@GetMapping("/drivers")
 	public String getDrivers(Model model) {
@@ -29,6 +32,7 @@ public class DriverController {
 		driver.setCreated(ZonedDateTime.now());
 		driver.setId(String.valueOf(UUID.randomUUID()));
 		driverService.save(driver);
+		vehicleService.update(driver);
 		return "redirect:/drivers";
 	}
 	

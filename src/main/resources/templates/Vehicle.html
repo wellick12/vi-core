@@ -129,7 +129,7 @@
                             <span class="profile-ava">
                                 <img alt="" src="img/avatar1_small.jpg">
                             </span>
-                        <span class="username">Jenifer Smith</span>
+                        <span class="username">User</span>
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu extended logout">
@@ -252,6 +252,7 @@
                             <tr>
                                 <th><i class="icon_profile"></i>Id</th>
                                 <th><i class="icon_profile"></i>Vehicle Reg</th>
+                                <th><i class="icon_calendar"></i>Blacklisted</th>
                                 <th><i class="icon_calendar"></i>Status</th>
                                 <th><i class="icon_mail_alt"></i>Registration Date</th>
                                 <th><i class="icon_cogs"></i> Action</th>
@@ -259,18 +260,15 @@
                             <tr th:each="vehicle:${vehicles}">
                                 <td th:text="${vehicle.id}">Id</td>
                                 <td th:text="${vehicle.licensePlate}">Vehicle Reg</td>
+                                <td th:text="${vehicle.blacklisted}">Blacklisted</td>
                                 <td th:text="${vehicle.status}">Status</td>
                                 <td th:text="${vehicle.created}">Registration Date</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-primary" id="editButton"
-                                           th:href="@{/vehicles/findById/(${vehicle.id})}"><i
-                                                class="icon_pencil-edit"></i></a>
-                                        <a class="btn btn-success" id="detailsButton"
-                                           th:href="@{/vehicles/findById/(id=${vehicle.id})}"><i
-                                                class="icon_document_alt"></i></a>
-                                        <a class="btn btn-danger" id="deleteButton"
-                                           th:href="@{/vehicles/delete/(id=${vehicle.id})}"><i
+
+                                      
+                                        <a class="btn btn-danger"
+                                           th:href="@{/vehicles/blacklist/(id=${vehicle.id})}"><i
                                                 class="icon_close_alt2"></i></a>
                                     </div>
                                 </td>
@@ -592,7 +590,7 @@
             </div>
             <div class="modal-footer">
                 <a href="" class="btn btn-primary" id="confirmDelete">Yes, Delete</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button onsubmit="blockVehicle()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

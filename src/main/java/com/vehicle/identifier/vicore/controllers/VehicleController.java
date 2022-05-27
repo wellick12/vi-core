@@ -3,12 +3,15 @@ package com.vehicle.identifier.vicore.controllers;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import com.vehicle.identifier.vicore.models.User;
 import com.vehicle.identifier.vicore.models.Vehicle;
 import com.vehicle.identifier.vicore.services.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class VehicleController {
@@ -54,4 +57,21 @@ public class VehicleController {
 	public Vehicle findByLicensePlate(String IicensePlate) {
 		return vehicleService.getVehicleByLicensePlate(IicensePlate);
 	}
+
+
+	@RequestMapping("vehicles/blacklist")
+	@ResponseBody
+	public RedirectView blacklistById(String id , RedirectAttributes redir)
+	{
+
+		Vehicle vehicle = vehicleService.findById(id);
+		vehicle.setBlacklisted(true);
+		vehicleService.blacklist(vehicle);
+		RedirectView  redirectView= new RedirectView("/vehicles",true);
+
+		redir.addFlashAttribute("message",	"You successfully registered! You can now login");
+
+		return redirectView;}
+
+
 }

@@ -14,4 +14,8 @@ public interface TimelogService {
     Timelog findById(String id);
 
     void addTimeEntry(Timelog timelog);
+
+    List<Timelog> getTimelogByLicensePlace(String licensePlate);
+
+    void save(Timelog timelog1);
 }

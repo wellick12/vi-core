@@ -206,22 +206,12 @@
                                 <th><i class="icon_table"></i>Vehicle License Number</th>
                                 <th><i class="icon_table"></i>Logged In</th>
                                 <th><i class="icon_table"></i>Logged Out</th>
-                                <th><i class="icon_cogs"></i> Action</th>
                             </tr>
                             <tr th:each="timelog:${timelogList}">
-                                <td th:text="${timelog.licensePlate}">Vehicle</td>
+                                <td th:text="${timelog.vehicleId}">Vehicle</td>
                                 <td th:text="${timelog.loggedIn}">Logged In</td>
                                 <td th:text="${timelog.loggedOut}">Logged Out</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-primary" id="editButton"
-                                           th:href="@{/timelog/findById/(id=${timelog.id})}"><i
-                                                class="icon_pencil-edit"></i></a>
-                                        <a class="btn btn-success" id="detailsButton"
-                                           th:href="@{/timelog/findById/(id=${timelog.id})}"><i
-                                                class="icon_document_alt"></i></a>
-                                    </div>
-                                </td>
+
                             </tr>
                             </tbody>
                         </table>

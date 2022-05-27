@@ -27,6 +27,7 @@ public class UserController {
 	@ResponseBody
 	public User findById(Integer id)
 	{
+
 		return userService.findById(id);
 	}
 

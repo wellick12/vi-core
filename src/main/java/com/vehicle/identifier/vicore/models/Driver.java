@@ -19,6 +19,15 @@ public class Driver extends Base {
 	public String msisdn;
 	public String nationalId;
 	public String email;
+	public String vehicleId;
+
+	public String getVehicleId() {
+		return vehicleId;
+	}
+
+	public void setVehicleId(String vehicleId) {
+		this.vehicleId = vehicleId;
+	}
 
 	public String getFirstname() {
 		return firstname;

@@ -18,10 +18,15 @@ import java.util.Properties;
 
 public class EmailUtil {
 
-    private static final String SMTP_SERVER = "mail.gravityzero.co.zw";
-    private static final String USERNAME = "noreply@gravityzero.co.zw";
-    private static final String PASSWORD = "Gravity@123";
-    private static final String EMAIL_FROM = "noreply@gravityzero.co.zw";
+//    private static final String SMTP_SERVER = "mail.gravityzero.co.zw";
+//    private static final String USERNAME = "noreply@gravityzero.co.zw";
+//    private static final String PASSWORD = "Gravity@123";
+//    private static final String EMAIL_FROM = "noreply@gravityzero.co.zw";
+
+    private static final String SMTP_SERVER = "smtp.gmail.com";
+    private static final String USERNAME = "vimurungu@gmail.com";
+    private static final String PASSWORD = "Windhawk1997";
+    private static final String EMAIL_FROM = "vimurungu@gmail.com";
 
     private static final String EMAIL_TO_CC = "";
 
@@ -33,12 +38,18 @@ public class EmailUtil {
         Properties prop = System.getProperties();
 
 
-        prop.put("mail.smtp.host", "mail.gravityzero.co.zw"); //optional, defined in SMTPTransport
+       /* prop.put("mail.smtp.host", "mail.gravityzero.co.zw"); //optional, defined in SMTPTransport
         prop.put("mail.smtp.port", "26"); // default port 25
+*/
+
+
+        prop.put("mail.smtp.host", "smtp.gmail.com"); //optional, defined in SMTPTransport
+        prop.put("mail.smtp.port", "587"); // default port 25
+
 
 
         prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "false"); //enable STARTTLS
+        prop.put("mail.smtp.starttls.enable", "true"); //enable STARTTLS
 
 
        /* prop.put("mail.smtp.starttls.enable", "true");
@@ -85,7 +96,7 @@ public class EmailUtil {
             if (System.getProperty("os.name").startsWith("Windows")) {
 
                 fds2 = new FileDataSource(
-                        "D\\hit.png");
+                        "D:\\hit.png");
             } else {
 
                 fds2 = new FileDataSource(

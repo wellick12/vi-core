@@ -2,12 +2,15 @@ package com.vehicle.identifier.vicore.controllers;
 
 import com.vehicle.identifier.vicore.models.*;
 import com.vehicle.identifier.vicore.services.*;
+import com.vehicle.identifier.vicore.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 import static com.vehicle.identifier.vicore.util.Notifications.*;
 import static com.vehicle.identifier.vicore.util.Times.entryTime;
@@ -44,11 +47,11 @@ public class RemoteController {
 
         if (Boolean.parseBoolean(mainEntrance.getValue())) {
 
-            Vehicle vehicle1 = vehicleService.getVehicleByLicensePlate(vehicle.getLicensePlate());
+            Vehicle dbLookUpVehicle = vehicleService.getVehicleByLicensePlate(vehicle.getLicensePlate());
             Timelog timelog = entryTime(vehicle.getLicensePlate());
             timelogService.addTimeEntry(timelog);
 
-            if (vehicle1.blacklisted) {
+            if (dbLookUpVehicle != null && dbLookUpVehicle.blacklisted) {
 
                 Notification notification = blockedNotification(timelog);
                 System.out.println("Sending email");
@@ -65,9 +68,34 @@ public class RemoteController {
                 notificationService.sendRegistrationEmail(vehicle);
                 return ResponseEntity.ok().build();
             }
-            Driver driver = driverService.findById(vehicle1.getDriverId());
+            if ("LOGGED_IN".equalsIgnoreCase(dbLookUpVehicle.getStatus())) {
+
+                Notification notification = investigateIncorrectEntry(timelog,dbLookUpVehicle);
+                System.out.println("Sending email");
+                notificationService.sendEmailNotification(notification);
+
+                return ResponseEntity.ok().build();
+
+
+            }
+
+
+
+            if(dbLookUpVehicle.getDriverId() == null ||
+            dbLookUpVehicle.getDriverId().isEmpty()){
+
+                Notification notification = unverifiedDriver(timelog,dbLookUpVehicle);
+                System.out.println("Sending email");
+                notificationService.sendEmailNotification(notification);
+
+                return ResponseEntity.ok().build();
+
+            }
+            Driver driver = driverService.findById(dbLookUpVehicle.getDriverId());
             gateService.openGate();
 
+            dbLookUpVehicle.setStatus("LOGGED_IN");
+            vehicleService.save(dbLookUpVehicle);
 
             Notification notification = arrivalNotification(timelog, driver);
             System.out.println("Sending email");
@@ -81,16 +109,47 @@ public class RemoteController {
 
         if (Boolean.parseBoolean(mainExit.getValue())) {
 
-
-
-            Vehicle vehicle1 = vehicleService.getVehicleByLicensePlate(vehicle.getLicensePlate());
+            Vehicle dbLookUpVehicle = vehicleService.getVehicleByLicensePlate(vehicle.getLicensePlate());
             Timelog timelog = entryTime(vehicle.getLicensePlate());
-            timelogService.addTimeEntry(timelog);
-            Driver driver = driverService.findById(vehicle1.getDriverId());
+
+
+            if (dbLookUpVehicle != null && dbLookUpVehicle.blacklisted) {
+
+                Notification notification = blockedVehicleExitNotification(timelog);
+                System.out.println("Sending email");
+                notificationService.sendEmailNotification(notification);
+            }
+
+
+            if ("LOGGED_OUT".equalsIgnoreCase(dbLookUpVehicle.getStatus())) {
+
+                Notification notification = investigateIncorrectExit(timelog,dbLookUpVehicle);
+                System.out.println("Sending email");
+                notificationService.sendEmailNotification(notification);
+
+                return ResponseEntity.ok().build();
+
+
+            }
+
+            List<Timelog> timelogList = timelogService.getTimelogByLicensePlace(dbLookUpVehicle.getLicensePlate());
+
+            timelogList.forEach(timelog1 -> {
+
+                timelog1.setLoggedOut(Util.currentTime());
+                timelogService.save(timelog1);
+            });
+
+            dbLookUpVehicle.setStatus("LOGGED_OUT");
+            vehicleService.save(dbLookUpVehicle);
+            Driver driver = driverService.findById(dbLookUpVehicle.getDriverId());
             gateService.openGate();
-            Notification notification = departureNotification(timelog, driver);
-            System.out.println("Sending email");
-            notificationService.sendEmailNotification(notification);
+            if( driver != null && driver.getEmail() != null ) {
+
+                Notification notification = departureNotification(timelog, driver);
+                System.out.println("Sending email");
+                notificationService.sendEmailNotification(notification);
+            }
 
             return ResponseEntity.ok().build();
 

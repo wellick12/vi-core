@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface SettingRepository extends JpaRepository<Setting, String> {
+public interface SettingRepository extends JpaRepository<Setting, Integer> {
 
 
 		Setting findSettingByKey(String key);

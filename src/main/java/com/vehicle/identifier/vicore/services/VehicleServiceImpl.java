@@ -1,5 +1,6 @@
 package com.vehicle.identifier.vicore.services;
 
+import com.vehicle.identifier.vicore.models.Driver;
 import com.vehicle.identifier.vicore.models.Vehicle;
 import com.vehicle.identifier.vicore.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,23 @@ public class VehicleServiceImpl implements VehicleService{
     @Override
     public void addFromRemoteVehicle(Vehicle vehicle) {
         vehicle.setId(uuid());
+        vehicle.setStatus("LOGGED_IN");
         vehicle.setCreated(currentTime());
         vehicle.setUpdated(currentTime());
         vehicleRepository.save(vehicle);
+    }
+
+    @Override
+    public void blacklist(Vehicle vehicle) {
+        vehicleRepository.save(vehicle);
+    }
+
+    @Override
+    public void update(Driver driver) {
+        Vehicle  vehicle=   vehicleRepository.findById(driver.getVehicleId());
+        vehicle.setDriverId(driver.getId());
+        vehicleRepository.save(vehicle);
+
+
     }
 }

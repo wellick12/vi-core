@@ -8,14 +8,11 @@ import javax.persistence.Table;
 
 
 @Entity
-@Where(clause = "deleted is null")
-@Table(name = "settings")
+@Table(name = "setting")
 public class Setting extends Base {
 
 	private String description;
-	@Column(unique = true, nullable = false)
 	private String key;
-	@Column(columnDefinition = "TEXT")
 	private String value;
 
 	public String getDescription() {

@@ -13,4 +13,10 @@ public interface TimelogRepository extends JpaRepository<Timelog, Integer> {
     List<Timelog> findAllByCreatedAfterAndAndLoggedOut(ZonedDateTime in, ZonedDateTime out);
 
     Timelog findById(String id);
+
+    List<Timelog> findTimelogByLicensePlate(String licensePlate);
+
+    List<Timelog> findTimelogByVehicleId(String vehicleId);
+
+
 }
